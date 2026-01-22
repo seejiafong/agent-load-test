@@ -4,8 +4,9 @@ A load testing suite using [Locust](https://locust.io/) to test streaming API en
 
 ## Overview
 
-This project consists of sample conversations under the **data** folder.
-Each conversation should exercise a different agent workflow. The number of such concurrent workflows is defined as "invocations" within the conversation json file.
+This project consists of sample conversations under the **data** folder.  
+Each conversation should exercise a different agent workflow.  
+The number of such concurrent workflows is defined as "invocations" within the conversation json file.
 
 ## Features
 
