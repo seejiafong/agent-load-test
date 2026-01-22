@@ -1,0 +1,18 @@
+[tool.poetry]
+name = "load-test"
+version = "0.1"
+description = ""
+authors = ["grace <seejiafong@gmail.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.13"
+locust = "^2.43.1"
+
+[tool.poetry.group.dev.dependencies]
+pytest = "^8.3.3"
+pytest-mock = "^3.14.0"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

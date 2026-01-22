@@ -1,0 +1,31 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Debug Locust",
+            "type": "python",
+            "request": "launch",
+            "module": "locust",
+            "console": "integratedTerminal",
+            "args": [
+                "-f",
+                "${workspaceFolder}/locustfile.py",
+                "--users", 
+                "55",
+                "-r",
+                "55",
+                "--host",
+                "http://localhost:8000"
+            ],
+            "python": "${workspaceFolder}/.venv/bin/python",  
+            "gevent": true,
+            "env": {
+                "LOCUST_LOCUSTFILE": "${workspaceFolder}/locustfile.py",
+                "GEVENT_SUPPORT": "True"
+            }
+        }
+    ]
+}
