@@ -1,6 +1,6 @@
 {
   "name": "conversation_B",
-  "invocations": 30,
+  "weight": 2,
   "conversation": [
     { "role": "user", "content": "Write a haiku" },
     { "role": "user", "content": "Make it darker" }

@@ -5,13 +5,13 @@ A load testing suite using [Locust](https://locust.io/) to test streaming API en
 ## Overview
 
 This project consists of sample conversations under the **data** folder.
-Each conversation should exercise a different agent workflow. The number of such concurrent workflows is defined as "invocations" within the conversation json file.
+Each conversation should exercise a different agent workflow. The relative frequency of each conversation is defined as "weight" within the conversation json file.
 
 ## Features
 
 - **Conversation-based load testing**: Define realistic multi-turn conversations in JSON format
 - **SSE streaming support**: Properly handles Server-Sent Events responses
-- **Configurable invocations**: Specify how many times each conversation should be executed
+- **Configurable weights**: Specify the relative frequency of each conversation
 - **Session management**: Generates unique session IDs for each conversation flow
 - **Performance metrics**: Automatic collection of response times, success/failure rates, and more via Locust
 
@@ -56,7 +56,7 @@ Create conversation files in the `data/` directory as JSON files. Each file is 1
 ```json
 {
   "name": "conversation_A",
-  "invocations": 25, //number of such concurrent conversations
+  "weight": 25,
   "conversation": [
     { "role": "user", "content": "Hello" },
     { "role": "user", "content": "Explain async APIs" }
@@ -66,7 +66,7 @@ Create conversation files in the `data/` directory as JSON files. Each file is 1
 
 **Fields:**
 - `name` (string): Identifier for this conversation scenario
-- `invocations` (number): How many times this conversation should be executed across all users
+- `weight` (number): Relative frequency/probability of this conversation being selected
 - `conversation` (array): Multi-turn conversation with role/content pairs
 
 
@@ -106,14 +106,14 @@ A debug configuration is included for VS Code. Press `F5` to start debugging wit
 
 ## How It Works
 
-1. **Load Phase**: All conversation files in the `data/` directory are loaded into a queue with the specified number of invocations
-2. **User Execution**: Each virtual user retrieves one conversation from the queue and executes it
+1. **Initialization**: All conversation files in the `data/` directory are loaded with their configured weights
+2. **User Execution**: Each virtual user continuously selects conversations based on their weights and executes them
 3. **Conversation Flow**: For each turn in a conversation:
    - A unique session ID is generated
    - A POST request is sent to `/stream/assistant/{session_id}`
    - The SSE stream response is consumed until `[DONE]` is received
    - Results are recorded as success or failure
-4. **Completion**: Users stop when no more conversations remain in the queue
+4. **Continuation**: Users continue selecting and executing conversations for the duration of the test
 
 ## API Requirements
 
@@ -137,9 +137,9 @@ Locust automatically provides:
 
 ## Troubleshooting
 
-**No invocations configured error**
+**No conversations or weight configured error**
 - Ensure at least one JSON conversation file exists in the `data/` directory
-- Verify each conversation file has a valid `invocations` count (> 0)
+- Verify each conversation file has a valid `weight` value (> 0)
 
 **Connection refused**
 - Ensure your target API is running on the specified host

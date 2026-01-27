@@ -1,3 +1,5 @@
+""" Example class testing against openrouter api"""
+
 import json
 import os
 import uuid
@@ -7,14 +9,11 @@ from random import choices
 from locust import HttpUser, task, between, events
 from conversation_utils import post_stream_request, log_turn, write_conversation_log
 
-# locust -f locustfile.py --host http://localhost:8000
-
-
 CONVERSATIONS_DIR = "data"
 
 RUN_LOG_DIR = "logs"
 
-URL = "https://localhost:8123/stream/assistant/"
+URL = "https://openrouter.ai/api/v1/chat/completions"
 
 HEADERS = {
     "Accept": "text/event-stream",
@@ -69,6 +68,7 @@ class ConversationUser(HttpUser):
     def run_conversation(self):
         convo = choices(conversations, weights=weights, k=1)[0]
         session_id = str(uuid.uuid4())
+        messages = []
 
         conversation_log = {
             "conversation_name": convo["name"],
@@ -78,16 +78,20 @@ class ConversationUser(HttpUser):
         }
 
         for turn_idx, turn in enumerate(convo["conversation"]):
+            messages.append({
+                "role": turn["role"],
+                "content": turn["content"],
+            })
 
             payload = {
-                "user_input": turn["content"],
+                "model": "openai/gpt-4o",
+                "messages": messages.copy(),
                 "stream": True,
             }
-            print (f"Session: {session_id}, Payload: {payload}")
 
             assistant_text, t_request_start, t_request_end, t_first_token = post_stream_request(
-                self.client, URL+"/"+session_id, HEADERS, payload, convo["name"]
-                +"_"+session_id[0:5]
+                self.client, URL, HEADERS, payload, convo["name"]
+                #+"_"+session_id[0:5]
             )
 
             if assistant_text is None:
@@ -96,6 +100,11 @@ class ConversationUser(HttpUser):
             conversation_log["turns"].append(
                 log_turn(turn_idx, payload, assistant_text, t_request_start, t_request_end, t_first_token)
             )
+
+            messages.append({
+                "role": "assistant",
+                "content": assistant_text,
+            })
 
             time.sleep(0.2)
 

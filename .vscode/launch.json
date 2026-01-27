@@ -13,18 +13,42 @@
             "args": [
                 "-f",
                 "${workspaceFolder}/locustfile.py",
-                "--users", 
+                "--users",
                 "55",
                 "-r",
                 "55",
                 "--host",
                 "http://localhost:8000"
             ],
-            "python": "${workspaceFolder}/.venv/bin/python",  
+            "python": "${workspaceFolder}/.venv/bin/python",
             "gevent": true,
             "env": {
                 "LOCUST_LOCUSTFILE": "${workspaceFolder}/locustfile.py",
-                "GEVENT_SUPPORT": "True"
+                "GEVENT_SUPPORT": "True",
+            }
+        },
+        {
+            "name": "OpenRouter",
+            "type": "python",
+            "request": "launch",
+            "module": "locust",
+            "console": "integratedTerminal",
+            "args": [
+                "-f",
+                "${workspaceFolder}/locustfile-openrouter.py",
+                "--users",
+                "5",
+                "-r",
+                "5",
+                "--host",
+                "http://localhost:8000"
+            ],
+            "python": "${workspaceFolder}/.venv/bin/python",
+            "gevent": true,
+            "env": {
+                "LOCUST_LOCUSTFILE": "${workspaceFolder}/locustfile-openrouter.py",
+                "GEVENT_SUPPORT": "True",
+                "OPENROUTER_API_KEY": "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"
             }
         }
     ]
